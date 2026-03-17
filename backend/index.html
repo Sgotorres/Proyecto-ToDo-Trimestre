@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>la todolis</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="container">
+    <h2>TodoLis</h2>
+    <button id="toggleViewBtn">Cambiar diseño</button>
+    <input type="text" id="taskInput" placeholder="Escribe una tarea..." />
+    <button id="addBtn">Agregar</button>
+    <div id="taskWrapper">
+      <ul id="taskList"></ul>
+    </div>
+  </div>
+
+  <div id="taskModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-content" role="document">
+      <header class="modal-header">
+        <h3 id="modalTitle">Tarea</h3>
+        <button id="closeModalBtn" class="modal-close" aria-label="Cerrar">×</button>
+      </header>
+      <main class="modal-body">
+        <div id="modalTextContainer">
+          <textarea id="modalText" rows="8" readonly></textarea>
+        </div>
+      </main>
+      <footer class="modal-footer">
+        <button id="editModalBtn">Editar</button>
+        <button id="saveModalBtn" disabled>Guardar</button>
+        <button id="finishModalBtn">Finalizada</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="scrypt.js"></script>
+</body>
+</html>
