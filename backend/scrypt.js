@@ -16,9 +16,18 @@ document.addEventListener("keydown", (e) => {
 function addTask(){
   const input = document.getElementById("taskInput");
   const text = input.value.trim();
-  if(text.length === 0) { alert("No puedes agregar una tarea vacía."); return; }
-  if(text.length < 5) { alert("La tarea debe tener al menos 5 caracteres."); return; }
-  if(text.length > 100) { alert("La tarea no puede superar los 100 caracteres."); return; }
+  if(text.length === 0){
+    alert("No puedes agregar una tarea vacía.");
+    return;
+  }
+  if(text.length < 5){
+    alert("La tarea debe tener al menos 5 caracteres.");
+    return;
+  }
+  if(text.length > 100){
+    alert("La tarea no puede superar los 100 caracteres.");
+    return;
+  }
   tasks.push({ text, deleted:false });
   input.value = "";
   renderTasks();
@@ -27,29 +36,37 @@ function addTask(){
 function renderTasks(){
   const list = document.getElementById("taskList");
   list.innerHTML = "";
-  const activeTasks = tasks.filter(t => !t.deleted);
-  const deletedTasks = tasks.filter(t => t.deleted);
-  const ordered = [...activeTasks, ...deletedTasks];
 
-  ordered.forEach((task, idx) => {
+  const mapped = tasks.map((task, idx) => ({ task, idx }));
+  const active = mapped.filter(x => !x.task.deleted);
+  const deleted = mapped.filter(x => x.task.deleted);
+  const ordered = [...active, ...deleted];
+
+  ordered.forEach(item => {
+    const task = item.task;
+    const originalIndex = item.idx;
+
     const li = document.createElement("li");
     li.className = task.deleted ? "tachado" : "";
 
     const span = document.createElement("span");
     span.textContent = task.text;
     span.tabIndex = 0;
-    span.addEventListener("click", () => openModal(idx));
-    span.addEventListener("keydown", (e) => { if(e.key === "Enter") openModal(idx); });
+    span.addEventListener("click", () => openModal(originalIndex));
+    span.addEventListener("keydown", (e) => { if(e.key === "Enter") openModal(originalIndex); });
 
     const editBtn = document.createElement("button");
     editBtn.textContent = "Editar";
-    editBtn.onclick = () => openModal(idx);
+    editBtn.onclick = () => openModal(originalIndex);
+    if(task.deleted) editBtn.disabled = true;
 
     const delBtn = document.createElement("button");
     delBtn.textContent = "Finalizada";
-    delBtn.onclick = () => { tasks[idx].deleted = true; renderTasks(); };
-
-    if(task.deleted) editBtn.disabled = true;
+    delBtn.onclick = () => {
+      tasks[originalIndex].deleted = true;
+      renderTasks();
+    };
+    if(task.deleted) delBtn.disabled = true;
 
     const btnGroup = document.createElement("div");
     btnGroup.className = "btn-group";
@@ -122,9 +139,18 @@ function saveModal(){
   if(!editMode) return;
   const textarea = document.getElementById("modalText");
   const text = textarea.value.trim();
-  if(text.length === 0){ alert("No puedes guardar una tarea vacía."); return; }
-  if(text.length < 5){ alert("La tarea debe tener al menos 5 caracteres."); return; }
-  if(text.length > 100){ alert("La tarea no puede superar los 100 caracteres."); return; }
+  if(text.length === 0){
+    alert("No puedes guardar una tarea vacía.");
+    return;
+  }
+  if(text.length < 5){
+    alert("La tarea debe tener al menos 5 caracteres.");
+    return;
+  }
+  if(text.length > 100){
+    alert("La tarea no puede superar los 100 caracteres.");
+    return;
+  }
   tasks[currentTaskIndex].text = text;
   renderTasks();
   closeModal();
@@ -134,10 +160,6 @@ function finishModal(){
   if(currentTaskIndex === null) return;
   tasks[currentTaskIndex].deleted = true;
   renderTasks();
-  const textarea = document.getElementById("modalText");
-  textarea.setAttribute("readonly", "true");
-  document.getElementById("editModalBtn").style.display = "none";
-  document.getElementById("saveModalBtn").disabled = true;
   closeModal();
 }
 
