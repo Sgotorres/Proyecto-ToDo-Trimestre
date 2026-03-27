@@ -1,176 +1,725 @@
-:root{
-  --card-line-height:1.2;
-  --card-lines:6;
+/* --- CONFIGURACIÓN BASE Y VARIABLES --- */
+:root {
+    --main-bg: #E1EBFA;          
+    --app-bg: #8990E1;           
+    --task-card-bg: #C1C6F0;     
+    
+    /* Colores de prioridad (Semáforo Pastel) */
+    --priority-high: #D19494;    /* Rojo (Alta) */
+    --priority-medium: #F3E5AB;  /* Amarillo (Media) */
+    --priority-low: #C1E1C1;     /* Verde (Baja) */
+    
+    --text-primary: #FFFFFF;     
+    --text-task: #1A1A1A;        
+    --font-family: 'Poppins', sans-serif;
 }
-body{
-  font-family:Arial, sans-serif;
-  background:#f2f2f2;
-  padding:20px;
+
+* { 
+    box-sizing: border-box; 
+    font-family: var(--font-family);
+    -webkit-tap-highlight-color: transparent; 
+
 }
-#container{
-  width:95%;
-  max-width:700px;
-  margin:auto;
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  box-shadow:0 0 12px rgba(0,0,0,0.12);
+
+body {
+    margin: 0;
+    background-color: var(--main-bg);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-input{
-  width:90%;
-  padding:8px;
-  margin-bottom:10px;
+
+/* --- PANEL PRINCIPAL (720px y Centrado) --- */
+.glass-container {
+    background-color: var(--app-bg);
+    border-radius: 45px; 
+    width: 95%;          
+    max-width: 720px;     
+    height: 92vh;
+    padding: 30px;
+    color: var(--text-primary);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;   
+    scrollbar-width: none;
+    position: relative;
 }
-button{
-  padding:6px 10px;
-  margin:5px 0;
-  cursor:pointer;
+
+header { 
+    display: flex; 
+    justify-content: center; 
+    margin-bottom: 25px; 
 }
-#toggleViewBtn{
-  width:100%;
-  margin-bottom:12px;
+
+h1 { 
+    font-weight: 700; 
+    font-size: 2.4rem; 
+    margin: 0; 
+    letter-spacing: -1px;
 }
-ul{
-  list-style:none;
-  padding:0;
-  margin:0;
+/* --- SECCIÓN DE ENTRADA (TASK INPUT + BOTÓN CREAR) --- */
+.input-section { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    margin-bottom: 20px; 
 }
-li{
-  background:#e9e9e9;
-  padding:10px;
-  margin-bottom:8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-radius:6px;
-  position:relative;
-  gap:10px;
-  cursor:default;
+
+.input-row { 
+    display: flex; 
+    gap: 10px; 
 }
-li span{
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+
+#task-input {
+    flex: 5; 
+    height: 55px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1.5px solid white;
+    border-radius: 20px;
+    color: white;
+    padding: 0 20px;
+    font-size: 1rem;
+    outline: none;
 }
-.btn-group{
-  display:flex;
-  gap:6px;
+
+#task-input::placeholder { color: rgba(255,255,255,0.7); }
+
+#add-btn {
+    flex: 0.8; 
+    height: 55px;
+    background: #A9B1E6;
+    border: 1.5px solid white;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.8rem; 
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.tachado{
-  text-decoration:line-through;
-  opacity:0.6;
+
+#add-btn:hover { transform: scale(1.05); background: #9299DF; }
+
+/* --- FILA DE SELECTORES Y FILTRO (CON SEPARACIÓN) --- */
+.selectors-row { 
+    display: flex; 
+    gap: 8px; 
+    align-items: center;
 }
-.gridView{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
+
+.compact-select {
+    flex: 1;
+    height: 42px;
+    border-radius: 12px;
+    border: none;
+    padding: 0 09px;
+    background: var(--task-card-bg);
+    color: var(--text-task);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
 }
-.gridView li{
-  width:140px;
-  height:140px;
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
-  padding:12px;
-  padding-bottom:52px;
-  border-radius:8px;
-  position:relative;
-  overflow:hidden;
-  background:#e9e9e9;
+
+.toggle-filter {
+    flex: 0.7; 
+    margin-left: 15px;
+    height: 42px;
+    background: #A9B1E6;
+    border: 1.5px solid white;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.65rem; 
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
 }
-.gridView li span{
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:var(--card-lines);
-  overflow:hidden;
-  white-space:normal;
-  word-break:break-word;
-  line-height:var(--card-line-height);
-  margin-bottom:6px;
-  max-height:calc(var(--card-line-height) * var(--card-lines) * 1em);
-  position:relative;
+
+.toggle-filter:hover {
+    transform: scale(1.05);
+    background: #9299DF;
 }
-.gridView li span.clamped::after{
-  content:"…";
-  position:absolute;
-  right:6px;
-  bottom:0;
-  background:linear-gradient(90deg, rgba(233,233,233,0), rgba(233,233,233,1) 60%);
-  padding-left:6px;
-  pointer-events:none;
-  font-weight:600;
+
+.toggle-filter.active-hechas {
+    background: var(--priority-low); 
+    color: #155724;
+    border-color: #155724;
 }
-.gridView li .btn-group{
-  position:absolute;
-  bottom:8px;
-  right:8px;
-  display:flex;
-  gap:6px;
+
+.toggle-filter.active-hechas:hover {
+    transform: scale(1.05);
+    background: #97cea4;
 }
-.listMode li span{
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+
+/* -----------------------------------
+   MODO LISTA (NO GRID)
+----------------------------------- */
+.task-list:not(.grid-view) .task-card .task-info {
+    flex: 1;
+    min-width: 0;
 }
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
+
+.task-list:not(.grid-view) .task-card {
+    background: var(--task-card-bg);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 22px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    min-height: 62px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-sizing: border-box;
 }
-.modal[aria-hidden="false"]{
-  display:flex;
+
+.task-list:not(.grid-view) .task-card:hover {
+    transform: translateX(5px);
+    background: #ced3f5;
 }
-.modal-content{
-  width:90%;
-  max-width:520px;
-  background:#fff;
-  border-radius:10px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.25);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+
+/* Texto truncado en modo lista */
+.task-list:not(.grid-view) .task-card .task-info {
+    flex: 1;
+    min-width: 0;
+
 }
-.modal-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 16px;
-  border-bottom:1px solid #eee;
+
+.task-list:not(.grid-view) .task-card .task-info strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-task);
+    font-size: 1.1rem;
+    display: block;
 }
-.modal-header h3{
-  margin:0;
-  font-size:1.05rem;
+
+/* Footer, tags y acciones */
+.task-list:not(.grid-view) .task-card .card-footer,
+.task-list:not(.grid-view) .task-card .tags,
+.task-list:not(.grid-view) .task-card .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 0;
 }
-.modal-close{
-  background:transparent;
-  border:none;
-  font-size:20px;
-  line-height:1;
-  cursor:pointer;
+
+/* Tarea cancelada */
+.task-card.cancelada {
+    opacity: 0.7;
+    filter: grayscale(0.5);
+    text-decoration: line-through;
 }
-.modal-body{
-  padding:12px 16px;
+
+/* -----------------------------------
+   MODO CUADRITOS (GRID VIEW)
+----------------------------------- */
+
+.task-list.grid-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    overflow: visible;
+    align-content: flex-start;
 }
-#modalText{
-  width:100%;
-  resize:vertical;
-  font-family:inherit;
-  font-size:0.95rem;
-  line-height:1.3;
-  padding:8px;
-  border:1px solid #ddd;
-  border-radius:6px;
-  box-sizing:border-box;
+
+/* Tarjeta en modo cuadritos */
+.task-list.grid-view .task-card {
+    flex: 0 0 calc(50% - 10px);
+    background: rgba(255,255,255,0.35);
+    border: 1.5px solid rgba(255,255,255,0.45);
+    backdrop-filter: blur(6px);
+    border-radius: 22px;
+    padding: 18px;
+    height: 140px;
+    min-height: 140px;
+    max-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    overflow: hidden;
+    transition: transform 0.25s ease, background 0.25s ease;
 }
-.modal-footer{
-  display:flex;
-  gap:8px;
-  justify-content:flex-end;
-  padding:12px 16px;
-  border-top:1px solid #eee;
+
+.task-list.grid-view .task-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: rgba(255,255,255,0.45);
+}
+
+/* Texto dentro del cuadrito */
+.task-list.grid-view .task-info {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.task-list.grid-view .task-info strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    line-height: 1.2;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
+}
+
+/* Footer del cuadrito */
+.task-list.grid-view .card-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tags dentro del cuadrito */
+.task-list.grid-view .tags .tag {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    border-radius: 6px;
+    margin-top: 0;
+}
+
+/* Botones dentro del cuadrito */
+.task-list.grid-view .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.task-list.grid-view .actions button {
+    background: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-size: 1.1rem;
+    transition: 0.2s ease;
+}
+
+.task-list.grid-view .actions button:hover {
+    background: rgba(255,255,255,0.9);
+    transform: scale(1.1);
+}
+/* --- TAGS DE PRIORIDAD --- */
+.tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    font-weight: 700;
+}
+.Alta { background: var(--priority-high); color: white; }
+.Media { background: var(--priority-medium); color: #856404; }
+.Baja { background: var(--priority-low); color: #155724; }
+/* Alinear icono y texto de categoría */
+
+/* --- MODAL 1--- */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: var(--app-bg);
+    padding: 30px;
+    border-radius: 30px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid white;
+    position: relative;
+    color: white;
+}
+#folder-selector {
+    max-height: 200px;
+    overflow-y: visible;
+}
+
+#folder-selector-list {
+    max-height: 180px;
+    overflow-y: auto;
+}
+.close-btn { 
+    cursor: pointer; 
+    font-size: 2rem; 
+    position: absolute; 
+    right: 20px; 
+    top: 10px; 
+}
+.btn-move-folder {
+    flex: 1;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    background: #C7D8FF;
+    color: #4A4A4A;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/*--------------------------------------
+            MODAL 2
+----------------------------------------*/
+#folder-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.folder-modal-content {
+    background: #8990E1;
+    padding: 20px;
+    border-radius: 15px;
+    width: 320px;
+    color: white;
+}
+
+.folder-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 5px;
+}
+
+.folder-task-list {
+    max-height: 150px;
+    overflow-y: auto;
+    background: rgba(255,255,255,0.15);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.folder-task-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.folder-modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.folder-btn-create {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    color: #8990E1;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.folder-btn-cancel {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #D19494;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+/* -----------------------------------
+   MODAL 3
+----------------------------------- */
+
+#delete-folder-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.delete-folder-content {
+    background: #8990E1;
+    padding: 20px;
+    border-radius: 15px;
+    width: 300px;
+    color: white;
+    text-align: center;
+}
+
+.delete-folder-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-confirm-delete {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #D19494;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel-delete {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    color: #8990E1;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Botón pequeño en las pestañas */
+.delete-folder-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 0.9rem;
+}
+
+/* --- VENTANA EMERGENTE DE ERROR (INFERIOR IZQUIERDA) --- */
+.toast-container {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--priority-high); 
+    color: white;
+    padding: 14px 22px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 2px solid white;
+    pointer-events: auto;
+    animation: slideUpIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, 
+               fadeOut 0.5s ease 2.5s forwards;
+}
+
+@keyframes slideUpIn {
+    from { transform: translateX(-50px) translateY(50px); opacity: 0; }
+    to { transform: translateX(0) translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+}
+
+.char-count {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 5px;
+    padding-right: 5px;
+    transition: color 0.2s ease;
+}
+.edit-char-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 5px;
+    transition: color 0.2s ease;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.25);
+    color: white;
+    outline: none;
+    font-size: 1rem;
+}
+.toggle-view {
+    flex: 0.1;
+    height: 42px;
+    background: #A9B1E6;
+    border: 1.5px solid white;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.55rem;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0 10px;
+}
+
+.toggle-view:hover {
+    transform: scale(1.05);
+    background: #9299DF;
+}
+/* --- VISTA MÓVIL (pantallas pequeñas) --- */
+@media (max-width: 480px) {
+    .task-list.grid-view .task-info strong {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+    .selectors-row {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    /* Selects más compactos */
+    .compact-select {
+        flex: 1 1 calc(50% - 6px);
+        height: 40px;
+        font-size: 0.75rem;
+    }
+
+    /* Botón de filtro más pequeño */
+    .toggle-filter {
+        flex: 1 1 calc(50% - 6px);
+        height: 38px;
+        font-size: 0.65rem;
+        padding: 0;
+    }
+
+    /* Botón de vista más pequeño y SIN flex para que no empuje */
+    .toggle-view {
+        flex: 0;
+        width: 28px;
+        height: 38px;
+        padding: 0;
+        font-size: 0.8rem;
+        border-radius: 10px;
+    }
+/* las carpetas */
+.folder-tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 5px 0;
+    overflow-x: auto;
+
+}
+
+.folder-tab {
+    background: rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 6px 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s ease;
+    height: 42px;
+}
+
+.folder-tab.active {
+    background: white;
+    color: #4A4A4A;
+}
+
+.folder-tab.add {
+    font-size: 1.2rem;
+    padding: 6px 12px;
+}
+/* --- TABS HORIZONTALES TIPO GOOGLE CHROME --- */
+#folder-tabs {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 01px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+#folder-tabs .folder-tab {
+    display: inline-flex !important;
+    flex-shrink: 0;
+}
+/* esto es para la barrita esa que se veia fea */
+::-webkit-scrollbar {
+    width: 8px;            
+    height: 8px;            
+}
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #A9B1E6;     
+    border: 2px solid var(--app-bg); 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #FFFFFF;     
+}
+
+* {
+    scrollbar-width: thin;          
+    scrollbar-color: #A9B1E6 rgba(255, 255, 255, 0.1); 
 }
