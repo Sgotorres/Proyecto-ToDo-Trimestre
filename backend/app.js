@@ -357,14 +357,42 @@ function getTasks() {
 function addTask() {
     const input = document.getElementById("task-input");
     const titulo = input.value.trim();
-    const categoria = document.getElementById("category-select").value;
-    const prioridad = document.getElementById("priority-select").value;
+    // Asegúrate de que los IDs de categoría y prioridad coincidan con tu HTML
+    const categoria = document.getElementById("category-select")?.value || "General";
+    const prioridad = document.getElementById("priority-select")?.value || "Media";
 
+    // 1. Validación de longitud (la que ya tenías)
     if (titulo.length < 5 || titulo.length > 100) {
         showError("⚠️ La tarea debe tener entre 5 y 100 caracteres.");
         return;
     }
 
+    // ==========================================
+    // 2. NUEVA VALIDACIÓN: Números y Especiales
+    // ==========================================
+    
+    // Escanea y cuenta cuántos números (0-9) hay. Si no hay, devuelve 0.
+    const cantidadNumeros = (titulo.match(/\d/g) || []).length;
+    
+    // Escanea y cuenta todo lo que NO sea letra (incluyendo acentos y ñ), NO sea número y NO sea espacio.
+    const cantidadEspeciales = (titulo.match(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g) || []).length;
+
+    // Puedes ajustar estos límites según lo que les hayan pedido
+    const MAX_NUMEROS = 4; 
+    const MAX_ESPECIALES = 3;
+
+    if (cantidadNumeros > MAX_NUMEROS) {
+        showError(`⚠️ Demasiados números. Máximo permitido: ${MAX_NUMEROS}.`);
+        return;
+    }
+
+    if (cantidadEspeciales > MAX_ESPECIALES) {
+        showError(`⚠️ Demasiados caracteres especiales. Máximo permitido: ${MAX_ESPECIALES}.`);
+        return;
+    }
+    // ==========================================
+
+    // Si pasa todas las validaciones, creamos la tarea (tu código original)
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     tasks.push({
         id: Date.now(),
@@ -378,23 +406,10 @@ function addTask() {
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
     input.value = "";
-    
-    getTasks();          
-    renderFolderTabs();  
-    
-    document.getElementById("char-count").textContent = "0 / 100";
-}
-
-/* --- CAMBIAR ESTADO TAREA --- */
-function changeStatus(id, nuevoEstado) {
-    let tasks = JSON.parse(localStorage.getItem("tasks"));
-    tasks = tasks.map(t => {
-        if (t.id === id) t.estado = nuevoEstado;
-        return t;
-    });
-    localStorage.setItem("tasks", JSON.stringify(tasks));
     getTasks();
-    renderFolderTabs();
+    renderFolderTabs(); // Actualiza los numeritos de las carpetas
+
+    document.getElementById("char-count").textContent = "0 / 100";
 }
 
 /* --- MODAL DETALLES TAREA --- */
