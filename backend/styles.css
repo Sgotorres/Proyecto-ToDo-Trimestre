@@ -272,17 +272,19 @@ h1 {
     min-height: 0;
 }
 
+/* Texto dentro del cuadrito corregido */
 .task-list.grid-view .task-info strong {
     font-size: 1rem;
     font-weight: 600;
     color: #1A1A1A;
     line-height: 1.2;
-    white-space: normal;
-    overflow: visible;
-    text-overflow: unset;
     word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
 /* Footer del cuadrito */
 .task-list.grid-view .card-footer {
     margin-top: auto;

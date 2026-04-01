@@ -520,6 +520,25 @@ function activateEditCounter() {
             editInput.value.length > 90 ? "#ffb3b3" : "rgba(255,255,255,0.8)";
     });
 }
+/* --- CAMBIAR ESTADO DE LA TAREA --- */
+function changeStatus(id, newStatus) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    
+    // Buscamos la tarea por su ID y le cambiamos el estado
+    tasks = tasks.map(t => {
+        if (t.id === id) {
+            t.estado = newStatus;
+        }
+        return t;
+    });
+
+    // Guardamos los cambios en localStorage
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    
+    // Refrescamos la lista de tareas y los contadores de las carpetas
+    getTasks();
+    renderFolderTabs();
+}
 
 /* --- TOAST DE ERROR --- */
 function showError(mensaje) {
