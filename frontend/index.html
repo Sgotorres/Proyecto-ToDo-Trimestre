@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Tareas</title>
     <link rel="stylesheet" href="styles.css">
-<<<<<<< Updated upstream
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-=======
-    <link rel="stylesheet" href="Fondo.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
->>>>>>> Stashed changes
 </head>
 <body>
     <div class="blob b1"></div>
@@ -24,45 +19,22 @@
         <div class="input-section">
             <div class="input-row">
                 <input type="text" id="task-input" placeholder="¿Qué vamos a hacer hoy?">
-<<<<<<< Updated upstream
                 <button id="add-btn">Crear</button>
             </div>
             
             <div class="selectors-row">
                 <select id="category-select">
-=======
-                <button id="add-btn">CREAR</button>
-            </div>
-            <div id="char-count" class="char-count">0 / 100</div>
-            <div class="selectors-row">
-                <select id="category-select" class="compact-select">
->>>>>>> Stashed changes
                     <option value="📚 Estudios">📚 Estudios</option>
                     <option value="🏠 Hogar">🏠 Hogar</option>
                     <option value="💼 Trabajo">💼 Trabajo</option>
                 </select>
 
-<<<<<<< Updated upstream
                 <select id="priority-select">
                     <option value="Baja">🟢 Baja</option>
                     <option value="Media">🟡 Media</option>
                     <option value="Alta">🔴 Alta</option>
                 </select>
             </div>
-=======
-                <select id="priority-select" class="compact-select">
-                    <option value="Alta">🔴 Alta</option>
-                    <option value="Media" selected>🟡 Media</option>
-                    <option value="Baja">🟢 Baja</option>
-                </select>
-                <button id="filter-btn" class="toggle-filter">Incompletas</button>
-                <button id="view-btn" class="toggle-view">⊞</button>
-
-
-                </select>
-            </div>
-            <div id="folder-tabs" class="folder-tabs">+</div>
->>>>>>> Stashed changes
         </div>
 
         <main id="todo-list" class="task-list">
@@ -75,7 +47,6 @@
                 <h2>Detalles de Tarea</h2>
                 <span class="close-btn">&times;</span>
             </div>
-<<<<<<< Updated upstream
             <div id="modal-body"></div>
         </div>
     </div>
@@ -83,55 +54,5 @@
     <div id="toast-container" class="toast-container"></div>
 
     <script src="app.js"></script>
-=======
-            <div id="modal-body">
-                </div>
-        </div>
-    </div>
- <!-- MODAL CREAR CARPETA -->
-<div id="folder-modal" class="modal">
-    <div class="folder-modal-content">
-        
-        <h3>Nueva Carpeta</h3>
-
-        <label>Nombre de la carpeta:</label>
-        <input id="folder-name-input" type="text" maxlength="30" class="folder-input">
-
-        <h4>Seleccionar tareas:</h4>
-        <div id="folder-task-list" class="folder-task-list">
-            <!-- Se llena desde JS -->
-        </div>
-
-        <div class="folder-modal-buttons">
-            <button id="folder-create-btn" class="folder-btn-create">Crear</button>
-            <button id="folder-cancel-btn" class="folder-btn-cancel">Cancelar</button>
-        </div>
-
-    </div>
-</div>
-<div id="delete-folder-modal" class="modal">
-    <div class="delete-folder-content">
-        <h3>Eliminar carpeta</h3>
-        <p>Las tareas serán movidas a la página principal.</p>
-
-        <div class="delete-folder-buttons">
-            <button id="confirm-delete-folder" class="btn-confirm-delete">Eliminar</button>
-            <button onclick="closeDeleteFolderModal()" class="btn-cancel-delete">Cancelar</button>
-        </div>
-    </div>
-</div>
-<div class="burbujas">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-</div>
-    <script src="app.js"></script>
-    <div id="toast-container" class="toast-container"></div>
->>>>>>> Stashed changes
 </body>
 </html>
