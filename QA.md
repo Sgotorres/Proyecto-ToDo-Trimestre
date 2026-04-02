@@ -5,11 +5,19 @@ Validaciones de Título: El sistema debe bloquear cualquier texto que tenga meno
 
 Regla de Edición: Si al intentar editar una tarea el campo queda vacío, el sistema no debe guardar el cambio y debe mantener el texto original.
 
+<<<<<<< HEAD
 Lógica de Estados: Ustedes controlan cuándo una tarea está "Activa" o "finalizada".
 
 Comportamiento de Eliminación: Al presionar "finalizar", la tarea debe cambiar su estado (tacharse visualmente), bloquear su edición y moverse automáticamente al final de la lista.
 
 Orden de las Tareas: Mantener el orden de creación (la primera tarea creada se queda de primera), a menos que pase al estado "finalizada".
+=======
+Lógica de Estados: Ustedes controlan cuándo una tarea está "Activa" o "Finalizada".
+
+Comportamiento de Eliminación: Al presionar "Finalizada", la tarea debe cambiar su estado (tacharse visualmente), bloquear su edición y moverse automáticamente al final de la lista.
+
+Orden de las Tareas: Mantener el orden de creación (la primera tarea creada se queda de primera), a menos que pase al estado "Finalizada".
+>>>>>>> 75993d1db54192bb8a4827cf3c72cb8d0c05c016
 
 Contenido del Modal: Definir la estructura de la información completa que se mostrará cuando el usuario abra una tarea.
 
