@@ -4,6 +4,11 @@
 let vistaActual = "activa";   // activa | cancelada
 let vistaModo = "lista";      // lista | cuadritos
 
+let folders = JSON.parse(localStorage.getItem("folders")) || [];
+let activeFolder = localStorage.getItem("activeFolder") || "principal";
+let folderToDelete = null;
+let folderToEditId = null;    // Movida aquí para mantener el orden
+
 /* --- VALIDACIÓN DE TEXTO REAL --- */
 function esTextoValido(texto) {
     // Esta expresión busca al menos una letra (incluye ñ y acentos)
@@ -14,16 +19,12 @@ function esTextoValido(texto) {
 /* ===========================
    CARPETAS (TABS)
 =========================== */
-let folders = JSON.parse(localStorage.getItem("folders")) || [];
-let activeFolder = localStorage.getItem("activeFolder") || "principal";
-let folderToDelete = null;
 
 /* --- MODAL ELIMINAR CARPETA --- */
 function closeDeleteFolderModal() {
     document.getElementById("delete-folder-modal").style.display = "none";
 }
 
-/* --- MODAL ELIMINAR CARPETA --- */
 function deleteFolder(folderId) {
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -51,6 +52,7 @@ function deleteFolder(folderId) {
     renderFolderTabs();
     getTasks();
 }
+
 function openDeleteFolderModal(folderId) {
     folderToDelete = folderId;
     
@@ -64,18 +66,14 @@ function openDeleteFolderModal(folderId) {
     document.getElementById("delete-folder-modal").style.display = "flex";
     
     document.getElementById("confirm-delete-folder").onclick = () => {
-    if (folderToDelete !== null) {
-        deleteFolder(folderToDelete);
-        if (typeof renderFolderManager === "function") renderFolderManager();
-        
-        // --- AÑADE ESTO AQUÍ ---
-        renderFolderManager(); 
-        // -----------------------
-        
-        closeDeleteFolderModal();
-        folderToDelete = null;
-    }
-};
+        if (folderToDelete !== null) {
+            deleteFolder(folderToDelete);
+            if (typeof renderFolderManager === "function") renderFolderManager();
+            
+            closeDeleteFolderModal();
+            folderToDelete = null;
+        }
+    };
 }
 
 /* --- CAMBIAR CARPETA ACTIVA --- */
@@ -87,7 +85,6 @@ function setActiveFolder(id) {
 }
 
 /* --- RENDER TABS DE CARPETAS --- */
-/* --- RENDER TABS DE CARPETAS (VERSIÓN CORREGIDA) --- */
 function renderFolderTabs() {
     const tabs = document.getElementById("folder-tabs");
     if (!tabs) return;
@@ -156,40 +153,13 @@ function renderFolderTabs() {
     add.onclick = createFolder;
     tabs.appendChild(add);
 }
+
 /* --- MODAL CREAR CARPETA --- */
 function createFolder() {
     loadTasksForFolderModal();
     document.getElementById("folder-modal").style.display = "flex";
 }
 
-function confirmCreateFolder() {
-    const input = document.getElementById("folder-name-input");
-    const error = document.getElementById("folder-error");
-    const name = input.value.trim();
-
-    if (!name) return;
-
-    // VALIDACIÓN: evitar duplicados (insensible a mayúsculas)
-    const exists = folders.some(f => f.nombre.toLowerCase() === name.toLowerCase());
-
-    if (exists) {
-        error.style.display = "block";
-        return;
-    }
-
-    const newFolder = {
-        id: Date.now(),
-        nombre: name
-    };
-
-    folders.push(newFolder);
-    localStorage.setItem("folders", JSON.stringify(folders));
-
-    closeCreateFolderModal();
-    renderFolderTabs();
-}
-
-/* --- CARGAR TAREAS DE PRINCIPAL EN MODAL CARPETA --- */
 /* --- CARGAR TAREAS DE PRINCIPAL EN MODAL CARPETA --- */
 function loadTasksForFolderModal() {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -219,7 +189,6 @@ function loadTasksForFolderModal() {
     });
 }
 
-/* --- CREAR CARPETA + MOVER TAREAS (BOTÓN MODAL) --- */
 /* --- CREAR CARPETA + MOVER TAREAS (BOTÓN MODAL) --- */
 document.getElementById("folder-create-btn").onclick = () => {
     const nombre = document.getElementById("folder-name-input").value.trim();
@@ -287,6 +256,32 @@ function closeMoveFolderModal() {
 function getTasks() {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const list = document.getElementById("todo-list");
+    if (!list) return;
+
+    // --- 1. IDENTIFICADOR DE CARPETA AUTOMÁTICO ---
+    let folderName = "🏠 Principal";
+    if (activeFolder !== "principal") {
+        const carpetasGuardadas = JSON.parse(localStorage.getItem("folders")) || [];
+        const current = carpetasGuardadas.find(f => Number(f.id) === Number(activeFolder));
+        if (current) folderName = `📁 ${current.nombre}`;
+    }
+
+    // Crear o actualizar el texto encima de la lista (sin tocar tu HTML original)
+    let folderDisplay = document.getElementById("dynamic-folder-title");
+    if (!folderDisplay) {
+        folderDisplay = document.createElement("div");
+        folderDisplay.id = "dynamic-folder-title";
+        // Estilo minimalista y limpio (puedes ajustar los colores si quieres)
+        folderDisplay.style.marginBottom = "15px";
+        folderDisplay.style.color = "#aaa"; 
+        folderDisplay.style.fontSize = "0.95rem";
+        folderDisplay.style.paddingLeft = "5px";
+        // Lo insertamos justo ANTES de la lista de tareas
+        list.parentNode.insertBefore(folderDisplay, list);
+    }
+    folderDisplay.innerHTML = `Estás en: <strong style="color: white; font-size: 1.1rem; margin-left: 5px;">${folderName}</strong>`;
+    // ----------------------------------------------
+
     list.innerHTML = "";
 
     // aplicar vista cuadritos
@@ -314,77 +309,26 @@ function getTasks() {
         return;
     }
 
+    // Dibujar las tarjetas (Bucle limpio)
     tareasFiltradas.forEach(task => {
-        tareasFiltradas.forEach(task => {
-    const card = document.createElement("div");
-    card.className = `task-card ${task.estado}`;
-    card.onclick = () => showDetails(task.id);
+        const card = document.createElement("div");
+        card.className = `task-card ${task.estado}`;
+        card.onclick = () => showDetails(task.id);
 
-    card.innerHTML = `
-        <div class="task-info">
-            <strong>${task.titulo}</strong>
-            <div class="tags">
-                <span class="tag ${task.prioridad}">${task.prioridad}</span>
-                <span class="tag category">📚 ${task.categoria}</span>
+        card.innerHTML = `
+            <div class="task-info">
+                <strong>${task.titulo}</strong>
+                <div class="tags">
+                    <span class="tag ${task.prioridad}">${task.prioridad}</span>
+                    <span class="tag category">📚 ${task.categoria}</span>
+                </div>
             </div>
-        </div>
-        <div class="actions">
-            <button class="status-btn" onclick="event.stopPropagation(); changeStatus(${task.id}, '${task.estado === "activa" ? "cancelada" : "activa"}')">
-                ${task.estado === "activa" ? "✔️" : "↩️"}
-            </button>
-        </div>
-    `;
-
-    list.appendChild(card);
-});
-
-        const info = document.createElement("div");
-        info.className = "task-info";
-
-        const title = document.createElement("strong");
-        title.textContent = task.titulo;
-
-        info.appendChild(title);
-
-        const footer = document.createElement("div");
-        footer.className = "card-footer";
-
-        const tags = document.createElement("div");
-        tags.className = "tags";
-
-        const pri = document.createElement("span");
-        pri.className = `tag ${task.prioridad}`;
-        pri.textContent = task.prioridad;
-
-        const cat = document.createElement("span");
-        cat.className = "tag category";
-        cat.textContent = task.categoria;
-
-        tags.appendChild(pri);
-        tags.appendChild(cat);
-
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        const btn = document.createElement("button");
-        btn.style.border = "none";
-        btn.style.background = "none";
-        btn.style.cursor = "pointer";
-        btn.style.fontSize = "1.4rem";
-        btn.textContent = task.estado === "activa" ? "✔️" : "↩️";
-
-        btn.onclick = e => {
-            e.stopPropagation();
-            changeStatus(task.id, task.estado === "activa" ? "cancelada" : "activa");
-        };
-
-        actions.appendChild(btn);
-
-        footer.appendChild(tags);
-        footer.appendChild(actions);
-
-        card.appendChild(info);
-        card.appendChild(footer);
+            <div class="actions">
+                <button class="status-btn" onclick="event.stopPropagation(); changeStatus(${task.id}, '${task.estado === "activa" ? "cancelada" : "activa"}')">
+                    ${task.estado === "activa" ? "✔️" : "↩️"}
+                </button>
+            </div>
+        `;
 
         list.appendChild(card);
     });
@@ -450,9 +394,6 @@ function addTask() {
 }
 
 /* --- MODAL DETALLES TAREA --- */
-/* --- MODAL DETALLES TAREA --- */
-/* --- MODAL DETALLES TAREA (ESTILO FOTO) --- */
-/* --- MODAL DETALLES TAREA (CORREGIDO) --- */
 function showDetails(id) {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const task = tasks.find(t => t.id === id);
@@ -569,6 +510,7 @@ function activateEditCounter() {
             editInput.value.length > 90 ? "#ffb3b3" : "rgba(255,255,255,0.8)";
     });
 }
+
 /* --- CAMBIAR ESTADO DE LA TAREA --- */
 function changeStatus(id, newStatus) {
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -660,6 +602,7 @@ function moveTaskToFolderInsideModal(taskId, folderId) {
         renderFolderTabs(); // Actualizamos los contadores de las pestañas
     }
 }
+
 /* --- MOVER TAREA A CARPETA (OTRO MODAL) --- */
 function moveTaskToFolder(folderId) {
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -684,75 +627,86 @@ function moveTaskToFolder(folderId) {
 const taskInput = document.getElementById("task-input");
 const charCount = document.getElementById("char-count");
 
-taskInput.addEventListener("input", () => {
-    let text = taskInput.value;
+if (taskInput) {
+    taskInput.addEventListener("input", () => {
+        let text = taskInput.value;
 
-    if (text.length > 100) {
-        taskInput.value = text.slice(0, 100);
-        showError("⚠️ No se puede pasar de 100 caracteres.");
-        return;
-    }
+        if (text.length > 100) {
+            taskInput.value = text.slice(0, 100);
+            showError("⚠️ No se puede pasar de 100 caracteres.");
+            return;
+        }
 
-    charCount.textContent = `${text.length} / 100`;
-    charCount.style.color =
-        text.length > 90 ? "#ffb3b3" : "rgba(255,255,255,0.8)";
-});
+        charCount.textContent = `${text.length} / 100`;
+        charCount.style.color = text.length > 90 ? "#ffb3b3" : "rgba(255,255,255,0.8)";
+    });
+}
 
 /* --- BOTÓN CAMBIAR VISTA --- */
-document.getElementById("view-btn").onclick = function () {
-    if (vistaModo === "lista") {
-        vistaModo = "cuadritos";
-        this.innerText = "☰";
-    } else {
-        vistaModo = "lista";
-        this.innerText = "⊞";
-    }
-    getTasks();
-};
+const viewBtn = document.getElementById("view-btn");
+if (viewBtn) {
+    viewBtn.onclick = function () {
+        if (vistaModo === "lista") {
+            vistaModo = "cuadritos";
+            this.innerText = "☰";
+        } else {
+            vistaModo = "lista";
+            this.innerText = "⊞";
+        }
+        getTasks();
+    };
+}
 
 /* --- FILTRO INCOMPLETAS / COMPLETAS --- */
-document.getElementById("filter-btn").onclick = function () {
-    if (vistaActual === "activa") {
-        vistaActual = "cancelada";
-        this.innerText = "COMPLETAS";
-        this.style.background = "#77DD77"; 
-    } else {
-        vistaActual = "activa";
-        this.innerText = "INCOMPLETAS";
-        this.style.background = ""; 
-    }
-    
-    
-    getTasks();          
-    renderFolderTabs();  
-};
-/* --- EVENTOS DE INTERFAZ --- */
-document.getElementById("add-btn").onclick = addTask;
-
-document.querySelector(".close-btn").onclick = () => {
-    document.getElementById("task-modal").style.display = "none";
-};
-
-window.onclick = e => {
-    if (e.target.className === "modal") {
-        document.getElementById("task-modal").style.display = "none";
-    }
-};
-
-document.getElementById("task-input").addEventListener("keypress", function (e) {
-    if (e.key === "Enter") addTask();
-});
-
-// Cerrar cualquier modal al hacer clic fuera del contenido
-window.addEventListener("click", function (e) {
-    const modals = document.querySelectorAll(".modal");
-
-    modals.forEach(modal => {
-        if (e.target === modal) {
-            modal.style.display = "none";
+const filterBtn = document.getElementById("filter-btn");
+if (filterBtn) {
+    filterBtn.onclick = function () {
+        if (vistaActual === "activa") {
+            vistaActual = "cancelada";
+            this.innerText = "COMPLETAS";
+            this.style.background = "#77DD77"; 
+        } else {
+            vistaActual = "activa";
+            this.innerText = "INCOMPLETAS";
+            this.style.background = ""; 
         }
+        getTasks();          
+        renderFolderTabs();  
+    };
+}
+
+/* --- EVENTOS DE INTERFAZ (LOS CABLES RESTAURADOS) --- */
+
+// 1. CONECTAR EL BOTÓN DE AGREGAR Y LA TECLA ENTER
+const addBtn = document.getElementById("add-btn");
+if (addBtn) addBtn.onclick = addTask;
+
+if (taskInput) {
+    taskInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") addTask();
     });
+}
+
+// 2. Cierre mediante el botón "X" (clase .close-btn)
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("close-btn")) {
+        const modal = e.target.closest(".modal");
+        if (modal) modal.style.display = "none";
+    }
 });
+
+// 3. Cierre al hacer clic fuera del contenido (en el fondo oscuro)
+window.addEventListener("click", function (e) {
+    if (e.target.classList.contains("modal")) {
+        e.target.style.display = "none";
+    }
+});
+
+// 4. Función auxiliar para cerrar manualmente desde botones "Cancelar"
+function cerrarCualquierModal() {
+    const modales = document.querySelectorAll(".modal");
+    modales.forEach(m => m.style.display = "none");
+}
 
 /* --- INICIO --- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -781,96 +735,14 @@ function renderFolderManager() {
     let foldersData = JSON.parse(localStorage.getItem("folders")) || [];
     container.innerHTML = "";
 
-    // 1. ORGANIZAR: Ponemos la activa al principio
+    // 1. ORGANIZAR: Ponemos la carpeta que está abierta actualmente de primera
     let sortedFolders = [];
-    
     if (activeFolder === "principal") {
         sortedFolders.push({ id: "principal", nombre: "Principal", esPrincipal: true });
         foldersData.forEach(f => sortedFolders.push(f));
     } else {
         const current = foldersData.find(f => f.id == activeFolder);
         if (current) sortedFolders.push(current);
-        sortedFolders.push({ id: "principal", nombre: "Principal", esPrincipal: true });
-        foldersData.forEach(f => {
-            if (f.id != activeFolder) sortedFolders.push(f);
-        });
-    }
-
-    // 2. DIBUJAR
-    sortedFolders.forEach(folder => {
-        const isSelected = (folder.id == activeFolder || (folder.esPrincipal && activeFolder === "principal"));
-        const div = document.createElement("div");
-        div.className = `folder-manage-card ${isSelected ? 'active-folder-highlight' : ''}`;
-        
-        const folderName = folder.esPrincipal ? `🏠 ${folder.nombre}` : `📁 ${folder.nombre}`;
-
-div.innerHTML = `
-    <span style="color: white; font-weight: ${isSelected ? 'bold' : 'normal'}">
-        ${folderName} ${isSelected ? ' <small>(Abierta)</small>' : ''}
-    </span>
-    <div class="folder-manage-actions">
-        <button class="btn-folder-action btn-open" onclick="activeFolder='${folder.id}'; localStorage.setItem('activeFolder', '${folder.id}'); getTasks(); closeFolderManager()">Abrir</button>
-        ${!isPrincipal ? `
-            <button class="btn-folder-action btn-edit" onclick="editFolderName(${folder.id}, '${folder.nombre}')">✏️</button>
-            <button class="btn-folder-action btn-delete-folder" onclick="openDeleteFolderModal(${folder.id})">🗑️</button>
-        ` : ''}
-    </div>
-`;
-        container.appendChild(div);
-    });
-}
-
-// 4. Editar nombre de carpeta
-function editFolderName(folderId, oldName) {
-    const newName = prompt("Nuevo nombre para la carpeta:", oldName);
-    if (newName && newName.trim() !== "" && newName !== oldName) {
-        // Validación de texto real (usando tu función existente)
-        if (!esTextoValido(newName)) {
-            alert("El nombre debe contener letras.");
-            return;
-        }
-
-        let foldersList = JSON.parse(localStorage.getItem("folders")) || [];
-        const index = foldersList.findIndex(f => f.id === folderId);
-        
-        if (index !== -1) {
-            foldersList[index].nombre = newName.trim();
-            localStorage.setItem("folders", JSON.stringify(foldersList));
-            
-            // Actualizar el nombre en las tareas (si guardas el nombre en el objeto tarea)
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks = tasks.map(t => {
-                if (Number(t.carpetaId) === Number(folderId)) t.categoria = newName.trim();
-                return t;
-            });
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            
-            renderFolderManager();
-            getTasks();
-        }
-    }
-}
-function renderFolderManager() {
-    const container = document.getElementById("folder-manager-list");
-    if (!container) return;
-
-    let foldersData = JSON.parse(localStorage.getItem("folders")) || [];
-    container.innerHTML = "";
-
-    // 1. CREAR EL ARRAY ORDENADO
-    // Separamos la activa de las demás para moverla al principio
-    let sortedFolders = [];
-    
-    // Si la activa es principal, va primero
-    if (activeFolder === "principal") {
-        sortedFolders.push({ id: "principal", nombre: "Principal", esPrincipal: true });
-        foldersData.forEach(f => sortedFolders.push(f));
-    } else {
-        // Si la activa es una carpeta creada, buscamos cuál es
-        const current = foldersData.find(f => f.id == activeFolder);
-        if (current) sortedFolders.push(current);
-        
-        // Añadimos Principal y el resto de carpetas
         sortedFolders.push({ id: "principal", nombre: "Principal", esPrincipal: true });
         foldersData.forEach(f => {
             if (f.id != activeFolder) sortedFolders.push(f);
@@ -880,26 +752,84 @@ function renderFolderManager() {
     // 2. RENDERIZAR
     sortedFolders.forEach(folder => {
         const isSelected = (folder.id == activeFolder || (folder.esPrincipal && activeFolder === "principal"));
+        const isPrincipal = folder.esPrincipal;
         const div = document.createElement("div");
         
-        // Si es la seleccionada, le ponemos un estilo especial
         div.className = `folder-manage-card ${isSelected ? 'active-folder-highlight' : ''}`;
-        
-        const folderName = folder.esPrincipal ? `🏠 ${folder.nombre}` : `📁 ${folder.nombre}`;
-        const isPrincipal = folder.esPrincipal;
+        const folderName = isPrincipal ? `🏠 ${folder.nombre}` : `📁 ${folder.nombre}`;
 
+        // AQUÍ ESTÁ LA MAGIA: El botón Abrir ahora refresca TODO y cierra el modal
         div.innerHTML = `
             <span style="color: white; font-weight: ${isSelected ? 'bold' : 'normal'}">
                 ${folderName} ${isSelected ? ' <small>(Abierta)</small>' : ''}
             </span>
             <div class="folder-manage-actions">
-                <button class="btn-folder-action btn-open" onclick="activeFolder='${folder.id}'; localStorage.setItem('activeFolder', '${folder.id}'); getTasks(); closeFolderManager()">Abrir</button>
+                <button class="btn-folder-action btn-open" 
+                    onclick="activeFolder='${folder.id}'; localStorage.setItem('activeFolder', '${folder.id}'); getTasks(); renderFolderTabs(); closeFolderManager();">
+                    Abrir
+                </button>
                 ${!isPrincipal ? `
-                    <button class="btn-folder-action btn-edit" onclick="editFolderName(${folder.id}, '${folder.nombre}')">✏️</button>
+                    <button class="btn-folder-action btn-edit" onclick="openEditFolderModal(${folder.id}, '${folder.nombre}')">✏️</button>
                     <button class="btn-folder-action btn-delete-folder" onclick="openDeleteFolderModal(${folder.id})">🗑️</button>
                 ` : ''}
             </div>
         `;
         container.appendChild(div);
     });
+}
+
+/* --- ABRIR MODAL DE EDITAR CARPETA --- */
+function openEditFolderModal(id, currentName) {
+    folderToEditId = id;
+    
+    const inputField = document.getElementById("edit-folder-input");
+    inputField.value = currentName;
+    
+    // Mostrar el modal
+    document.getElementById("edit-folder-modal").style.display = "flex";
+    
+    // Enfocar el input automáticamente para que el usuario pueda escribir de inmediato
+    setTimeout(() => inputField.focus(), 100);
+}
+
+/* --- CERRAR MODAL DE EDITAR CARPETA --- */
+function closeEditFolderModal() {
+    document.getElementById("edit-folder-modal").style.display = "none";
+    folderToEditId = null;
+}
+
+/* --- GUARDAR EDICIÓN DE CARPETA --- */
+function saveEditFolder() {
+    const newName = document.getElementById("edit-folder-input").value.trim();
+    
+    // Validación 1: No puede estar vacío
+    if (!newName) {
+        showError("⚠️ La carpeta necesita un nombre.");
+        return;
+    }
+
+    // Validación 2: No puede llamarse igual a otra carpeta ya existente
+    // (Ignoramos mayúsculas/minúsculas y excluimos la carpeta que estamos editando actualmente)
+    const exists = folders.some(f => f.nombre.toLowerCase() === newName.toLowerCase() && f.id !== folderToEditId);
+    if (exists) {
+        showError("⚠️ Ya existe otra carpeta con ese nombre.");
+        return;
+    }
+
+    // Actualizar el nombre en el arreglo de carpetas
+    const folderIndex = folders.findIndex(f => f.id === folderToEditId);
+    if (folderIndex !== -1) {
+        folders[folderIndex].nombre = newName;
+        
+        // Guardar en LocalStorage
+        localStorage.setItem("folders", JSON.stringify(folders));
+        
+        // Actualizar la interfaz principal
+        renderFolderTabs();
+        
+        // Actualizar la lista en el administrador de carpetas
+        renderFolderManager();
+        
+        closeEditFolderModal();
+    }
 }
