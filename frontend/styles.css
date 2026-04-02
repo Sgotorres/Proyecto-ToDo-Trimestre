@@ -1,13 +1,13 @@
-/* --- CONFIGURACIÓN BASE --- */
+/* --- CONFIGURACIÓN BASE Y VARIABLES --- */
 :root {
     --main-bg: #E1EBFA;          
     --app-bg: #8990E1;           
     --task-card-bg: #C1C6F0;     
     
-    /* Colores de prioridad actualizados (Semáforo Pastel) */
+    /* Colores de prioridad (Semáforo Pastel) */
     --priority-high: #D19494;    /* Rojo (Alta) */
-    --priority-medium: #F3E5AB;  /* Amarillo Crema (Media) */
-    --priority-low: #C1E1C1;     /* Verde Menta (Baja) */
+    --priority-medium: #F3E5AB;  /* Amarillo (Media) */
+    --priority-low: #C1E1C1;     /* Verde (Baja) */
     
     --text-primary: #FFFFFF;     
     --text-task: #1A1A1A;        
@@ -18,6 +18,8 @@
     box-sizing: border-box; 
     font-family: var(--font-family);
     -webkit-tap-highlight-color: transparent; 
+    scrollbar-width: thin;          
+    scrollbar-color: #A9B1E6 rgba(255, 255, 255, 0.1); 
 }
 
 body {
@@ -27,17 +29,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; 
 }
 
-/* --- PANEL PRINCIPAL (720px y Centrado) --- */
+/* --- PANEL PRINCIPAL --- */
 .glass-container {
     background-color: var(--app-bg);
-    border-radius: 40px; 
-    width: 95%;           
+    border-radius: 45px; 
+    width: 95%;          
     max-width: 720px;     
-    height: 90vh;
-    padding: 35px;
+    height: 92vh;
+    padding: 30px;
     color: var(--text-primary);
     box-shadow: 0 15px 50px rgba(0,0,0,0.15);
     display: flex;
@@ -46,34 +47,30 @@ body {
     position: relative;
 }
 
-/* TÍTULO "MIS TAREAS" EN EL CENTRO */
-.glass-container header {
-    display: flex;
+header { 
+    display: flex; 
     justify-content: center; 
-    align-items: center;
-    width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: 25px; 
 }
 
 h1 { 
     font-weight: 700; 
+    font-size: 2.4rem; 
     margin: 0; 
-    font-size: 2.2rem; 
-    text-align: center;
     letter-spacing: -1px;
 }
 
 /* --- SECCIÓN DE ENTRADA --- */
-.input-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
+.input-section { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    margin-bottom: 20px; 
 }
 
-.input-row {
-    display: flex;
-    gap: 12px;
+.input-row { 
+    display: flex; 
+    gap: 10px; 
 }
 
 #task-input {
@@ -99,7 +96,6 @@ h1 {
     color: white;
     font-size: 0.8rem; 
     font-weight: 700;
-    letter-spacing: 0.5px;
     cursor: pointer;
     transition: 0.3s;
     display: flex;
@@ -109,140 +105,402 @@ h1 {
 
 #add-btn:hover { transform: scale(1.05); background: #9299DF; }
 
-.selectors-row {
-    display: flex;
-    gap: 12px;
+.char-count {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 5px;
+    padding-right: 5px;
 }
 
-.selectors-row select {
+/* --- FILA DE SELECTORES Y BOTONES DE CONTROL --- */
+.selectors-row { 
+    display: flex; 
+    gap: 8px; 
+    align-items: center;
+}
+
+.compact-select {
     flex: 1;
-    height: 48px;
-    border-radius: 15px;
+    height: 42px;
+    border-radius: 12px;
     border: none;
-    padding: 0 15px;
+    padding: 0 09px;
     background: var(--task-card-bg);
     color: var(--text-task);
     font-weight: 600;
+    font-size: 0.8rem;
     cursor: pointer;
     outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
 }
 
-/* --- LISTA DE TAREAS --- */
-.task-list {
-    overflow-y: auto;
-    overflow-x: hidden; 
-    flex-grow: 1;
-    padding-right: 8px;
-}
-
-.task-list::-webkit-scrollbar { width: 6px; }
-.task-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-
-.task-card {
-    background: var(--task-card-bg);
-    padding: 22px;
-    border-radius: 25px;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Botón de Filtro (Incompletas/Completas) */
+.toggle-filter {
+    flex: 1.2; 
+    margin-left: 10px;
+    height: 42px;
+    background: #A9B1E6;
+    border: 1.5px solid white;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.75rem; 
     cursor: pointer;
-    width: 100%;
     transition: 0.3s;
-    user-select: none; 
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0 10px;
+    position: relative;
+}
+
+.toggle-filter:hover {
+    transform: scale(1.05);
+    background: #9299DF;
+    z-index: 10;
+}
+
+.toggle-filter.active-hechas {
+    background: var(--priority-low); 
+    color: #155724;
+    /* Mantenemos el mismo grosor y estilo de borde que el botón original */
+    border: 1.5px solid white; 
+}
+
+.toggle-filter.active-hechas:hover {
+    transform: scale(1.05);
+    /* Un verde un poco más oscuro para el hover de completadas */
+    background: #a3d9af; 
+    z-index: 10;
+}
+
+/* Botón de Vista (Cuadritos/Lista) */
+.toggle-view {
+    flex: 0 0 42px;
+    height: 42px;
+    background: #A9B1E6;
+    border: 1.5px solid white;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    position: relative;
+}
+
+.toggle-view:hover {
+    transform: scale(1.05);
+    background: #9299DF;
+    z-index: 10;
+}
+
+/* --- CARPETAS (TABS) --- */
+.folder-tabs {
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.folder-tab {
+    background: rgba(255,255,255,0.25);
     border: 1px solid rgba(255,255,255,0.4);
+    padding: 6px 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.2s ease;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
-.task-card:hover { 
-    transform: translateX(8px); 
-    background: #ced3f5; 
+.folder-tab.active { background: white; color: #4A4A4A; }
+.folder-tab.add { font-size: 1.2rem; padding: 6px 12px; }
+
+/* -----------------------------------
+    MODO LISTA
+----------------------------------- */
+.task-list:not(.grid-view) .task-card {
+    background: var(--task-card-bg);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 22px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.task-info {
+.task-list:not(.grid-view) .task-card:hover {
+    transform: translateX(5px);
+    background: #ced3f5;
+}
+
+.task-list:not(.grid-view) .task-info {
     flex: 1;
-    min-width: 0; 
+    min-width: 0;
 }
 
-.task-info strong {
-    color: var(--text-task);
-    display: block;
-    font-size: 1.15rem;
+.task-list:not(.grid-view) .task-info strong {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-task);
+    font-size: 1.1rem;
+    display: block;
 }
 
+/* -----------------------------------
+    MODO CUADRITOS (GRID VIEW)
+----------------------------------- */
+.task-list.grid-view {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+}
+
+.task-list.grid-view .task-card {
+    flex: 0 0 calc(50% - 5px);
+    background: rgba(255,255,255,0.35);
+    border: 1.5px solid rgba(255,255,255,0.45);
+    backdrop-filter: blur(6px);
+    border-radius: 22px;
+    padding: 18px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.25s ease;
+}
+
+.task-list.grid-view .task-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: rgba(255,255,255,0.45);
+}
+
+.task-list.grid-view .task-info strong {
+    font-size: 1rem;
+    color: #1A1A1A;
+    line-height: 1.2;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* --- ELEMENTOS COMUNES DE TARJETA --- */
 .task-card.cancelada {
-    opacity: 0.5;
+    opacity: 0.7;
+    filter: grayscale(0.5);
     text-decoration: line-through;
-    filter: grayscale(0.6);
-    transform: none !important;
 }
 
-/* --- TAGS DE PRIORIDAD ACTUALIZADOS --- */
+.actions { display: flex; gap: 8px; }
 .tag {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    margin-top: 8px;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
     font-weight: 700;
-    text-transform: uppercase;
 }
+.Alta { background: var(--priority-high); color: white; }
+.Media { background: var(--priority-medium); color: #856404; }
+.Baja { background: var(--priority-low); color: #155724; }
 
-.Alta { 
-    background: var(--priority-high); 
-    color: white; 
-}
-
-.Media { 
-    background: var(--priority-medium); 
-    color: #856404; 
-}
-
-.Baja { 
-    background: var(--priority-low); 
-    color: #155724; 
-}
-
-/* --- MODAL --- */
+/* --- MODALES --- */
 .modal {
     display: none;
     position: fixed;
     z-index: 1000;
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
     justify-content: center;
     align-items: center;
-    overflow: hidden;
 }
 
-.modal-content {
+.modal-content, .folder-modal-content, .delete-folder-content {
     background: var(--app-bg);
-    padding: 35px;
-    border-radius: 35px;
+    padding: 30px;
+    border-radius: 30px;
     width: 90%;
-    max-width: 450px;
-    border: 2px solid white;
+    max-width: 400px;
+    border: 1px solid white;
     color: white;
+    position: relative;
+}
+/* --- ESTILO MODAL DE LA FOTO --- */
+.modal-content.glass-card {
+    background: #8990E1; /* Color base de tu app */
+    border-radius: 30px;
+    padding: 35px;
+    border: none;
+    max-width: 450px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-.modal-header {
+.modal-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+/* Campos de edición */
+.edit-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+/* --- INPUT DE EDICIÓN (MODAL) --- */
+.edit-input {
+    width: 100%;
+    padding: 15px 20px;
+    margin-top: 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Fondo morado oscuro traslúcido para que el texto blanco resalte */
+    background: rgba(0, 0, 0, 0.15) !important; 
+    color: white !important; /* Color del texto que escribes */
+    font-size: 1.1rem;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box; /* Evita que el input se salga del modal */
+    transition: 0.3s;
+}
+
+.edit-input:focus {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Color del texto cuando el input está deshabilitado (Tareas completadas) */
+.edit-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Asegura que el label de "Editar Título" se vea bien */
+.edit-label {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-left: 5px;
+}
+
+/* Fila de Categoría y Prioridad */
+.modal-info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-top: 20px;
+    margin-bottom: 30px;
 }
 
-.close-btn { 
-    cursor: pointer; 
-    font-size: 2.2rem; 
-    line-height: 1;
+.modal-category {
+    font-size: 1rem;
+    font-weight: 600;
 }
 
-/* --- VENTANA EMERGENTE DE ERROR (TOAST) --- */
+.modal-priority-pill {
+    background: #F3E5AB; /* Amarillo pastel de la foto */
+    color: #1A1A1A;
+    padding: 6px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Botones estilo pastilla */
+.modal-actions-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-modal-save {
+    flex: 1;
+    background: white !important;
+    color: #8990E1 !important;
+    border-radius: 25px;
+    padding: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-modal-close {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white;
+    border-radius: 25px;
+    padding: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+}
+
+/* Botón de eliminar (Borde rojo) */
+.btn-modal-delete-danger {
+    width: 100%;
+    background: rgba(211, 118, 118, 0.1);
+    color: #ffb3b3;
+    border: 1.5px solid #ff4d4d !important; /* El borde rojo de la foto */
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.edit-input, .folder-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.25);
+    color: white;
+    outline: none;
+}
+
+/* --- TOAST / NOTIFICACIONES --- */
 .toast-container {
     position: fixed;
     bottom: 25px;
@@ -259,11 +517,7 @@ h1 {
     color: white;
     padding: 14px 22px;
     border-radius: 18px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    font-weight: 600;
-    font-size: 0.85rem;
     border: 2px solid white;
-    pointer-events: auto;
     animation: slideUpIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, 
                fadeOut 0.5s ease 2.5s forwards;
 }
@@ -274,6 +528,242 @@ h1 {
 }
 
 @keyframes fadeOut {
-    from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.9); }
+}
+
+/* --- OCULTAR SCROLLBAR MANTENIENDO FUNCIONALIDAD --- */
+
+/* Para Chrome, Safari y Opera */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Para IE, Edge y Firefox */
+* {
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+/* --- RESPONSIVE / MÓVIL --- */
+@media (max-width: 480px) {
+    .selectors-row { flex-wrap: wrap; gap: 5px; }
+    
+    .compact-select { flex: 1 1 calc(50% - 6px); height: 40px; font-size: 0.75rem; }
+
+    .toggle-filter {
+        flex: 1; 
+        height: 40px;
+        font-size: 0.7rem;
+        margin-left: 0;
+    }
+
+    .toggle-view {
+        flex: 0 0 40px;
+        height: 40px;
+    }
+
+    .task-list.grid-view .task-info strong {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block;
+    }
+}
+/* --- NUEVO BOTÓN DE MOVER A CARPETA (MODAL) --- */
+.btn-move-folder {
+    width: 100%;
+    margin: 15px 0; /* Espaciado arriba y abajo */
+    padding: 14px;
+    border-radius: 20px; /* Redondeado como la foto */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s ease;
+}
+
+.btn-move-folder:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px);
+}
+/* Esto moverá el contador del modal un poco más a la izquierda */
+.edit-char-count {
+    text-align: right !important;
+    padding-right: 30px !important; /* Aumenta este número para moverlo más a la izquierda */
+    display: block;
+    width: 100%;
+}
+/* --- NUEVA ORGANIZACIÓN DE TAREAS --- */
+.task-card {
+    background: rgba(255, 255, 255, 0.3); /* Color claro como la foto */
+    border-radius: 20px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between; /* Separa el texto del check */
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.task-info {
+    display: flex;
+    flex-direction: column; /* Título arriba, tags abajo */
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.task-info strong {
+    font-size: 1.1rem;
+    color: #1A1A1A; /* Texto oscuro para que resalte */
+}
+
+.tags {
+    display: flex;
+    gap: 8px;
+}
+
+.tag {
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Colores de prioridad (Alta es rojiza según tu foto) */
+.tag.Alta { background: #D19494; }
+.tag.Media { background: #F3E5AB; color: #856404; }
+.tag.Baja { background: #B4CFB0; color: #1E3A1A; }
+.tag.category { background: rgba(255, 255, 255, 0.4); color: #444; }
+
+/* El check a la derecha */
+.actions {
+    margin-left: 15px;
+}
+
+.status-btn {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.status-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+/* Color Rojo Pastel para el Modal (Prioridad Alta) */
+.modal-priority-pill.Alta {
+    background: #D19494 !important; /* El color exacto de tu foto */
+    color: white !important;
+    padding: 6px 15px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+/* --- ELIMINAR RAYA BLANCA EN BOTÓN REVERTIR --- */
+.task-card.cancelada .status-btn, 
+.task-card.cancelada .actions button {
+    border: none !important;      /* Quita cualquier borde */
+    outline: none !important;     /* Quita el resaltado al hacer clic */
+    box-shadow: none !important;  /* Quita sombras que parezcan rayas */
+    background: transparent !important;
+    text-decoration: none !important; /* Por si acaso hay un subrayado */
+}
+
+/* Si usas pseudo-elementos, esto los desactiva */
+.task-card.cancelada .status-btn::before,
+.task-card.cancelada .status-btn::after {
+    display: none !important;
+    content: none !important;
+}
+/* Color Rojo Pastel para el Modal (Prioridad Alta) */
+.modal-priority-pill.Alta {
+    background: #D19494 !important; /* El color exacto de tu foto */
+    color: white !important;
+    padding: 6px 15px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+.btn-folder-manager {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%; /* O el tamaño que prefieras */
+    transition: 0.3s;
+}
+
+.folder-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.folder-manage-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 18px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.folder-manage-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-folder-action {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.btn-open { background: #8990E1; color: white; }
+.btn-edit { background: #F3E5AB; color: #856404; }
+.btn-delete-folder { background: #D19494; color: white; }
+.active-folder-highlight {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid #ffffff !important;
+}
+.active-folder-highlight small {
+    background: #8990E1;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+}
+.burbujas {
+    position: fixed; /* Importante: se fija a la pantalla, no al cuadro */
+    width: 100%;
+    height: 100%;
+    z-index: -1;      /* Las envía al fondo de todo */
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none; /* Para que no interfieran al hacer clic en las tareas */
+}
+
+/* Asegúrate de que el contenedor principal sea transparente o tenga un fondo translúcido */
+.glass-container {
+    position: relative;
+    z-index: 1; /* El cuadro de tareas queda por encima de las burbujas */
+    /* ... resto de tu código ... */
 }
