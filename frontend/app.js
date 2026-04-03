@@ -1,3 +1,4 @@
+const API_URL = "http://localhost:3000"; // Asegúrate que coincida con el puerto de index.js
 /* ===========================
    VARIABLES GLOBALES
 =========================== */
