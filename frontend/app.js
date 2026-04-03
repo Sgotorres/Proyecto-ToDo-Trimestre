@@ -1,4 +1,3 @@
-const API_URL = "http://localhost:3000"; // Asegúrate que coincida con el puerto de index.js
 /* ===========================
    VARIABLES GLOBALES
 =========================== */
@@ -321,7 +320,7 @@ function getTasks() {
                 <strong>${task.titulo}</strong>
                 <div class="tags">
                     <span class="tag ${task.prioridad}">${task.prioridad}</span>
-                    <span class="tag category">📚 ${task.categoria}</span>
+                    <span class="tag category"> ${task.categoria}</span>
                 </div>
             </div>
             <div class="actions">
