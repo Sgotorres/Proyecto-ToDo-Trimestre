@@ -320,6 +320,7 @@ function getTasks() {
                 <strong>${task.titulo}</strong>
                 <div class="tags">
                     <span class="tag ${task.prioridad}">${task.prioridad}</span>
+                    <span class="tag category"> ${task.categoria}</span>
                 </div>
             </div>
             <div class="actions">
