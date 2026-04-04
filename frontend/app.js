@@ -16,6 +16,24 @@ function esTextoValido(texto) {
     return tieneLetras;
 }
 
+/* --- VALIDACIÓN DE TEXTO REAL --- */
+function esTextoValido(texto) {
+    const tieneLetras = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(texto);
+    return tieneLetras;
+}
+
+// PEGA ESTO AQUÍ (Línea 23 aprox.)
+function validarNombreCarpeta(nombre) {
+    const totalNumeros = (nombre.match(/\d/g) || []).length;
+    const totalEspeciales = (nombre.match(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g) || []).length;
+    const tieneLetras = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(nombre);
+
+    if (!tieneLetras) return { valido: false, msj: "⚠️ El nombre debe contener letras." };
+    if (totalNumeros > 4) return { valido: false, msj: "⚠️ Máximo 4 números permitidos." };
+    if (totalEspeciales > 4) return { valido: false, msj: "⚠️ Máximo 4 caracteres especiales." };
+    return { valido: true };
+}
+
 /* ===========================
    CARPETAS (TABS)
 =========================== */
@@ -208,6 +226,13 @@ document.getElementById("folder-create-btn").onclick = () => {
         id: Date.now(),
         nombre
     };
+
+    // NUEVA VALIDACIÓN: Reglas de números y especiales
+    const chequeo = validarNombreCarpeta(nombre);
+    if (!chequeo.valido) {
+        showError(chequeo.msj);
+        return;
+    }
 
     folders.push(nueva);
     localStorage.setItem("folders", JSON.stringify(folders));
@@ -805,6 +830,13 @@ function saveEditFolder() {
     // Validación 1: No puede estar vacío
     if (!newName) {
         showError("⚠️ La carpeta necesita un nombre.");
+        return;
+    }
+
+    // NUEVA VALIDACIÓN: Reglas de números y especiales
+    const chequeoEdit = validarNombreCarpeta(newName);
+    if (!chequeoEdit.valido) {
+        showError(chequeoEdit.msj);
         return;
     }
 
