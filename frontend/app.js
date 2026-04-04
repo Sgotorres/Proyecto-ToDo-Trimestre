@@ -387,13 +387,22 @@ function addTask() {
     const MAX_NUMEROS = 4; 
     const MAX_ESPECIALES = 3;
 
-    if (cantidadNumeros > MAX_NUMEROS) {
-        showError(`⚠️ La tarea debe contener al menos algunas letras.`);
+    // 2. Validación: Al menos una letra
+    if (!esTextoValido(titulo)) {
+        showError("⚠️ La tarea debe contener al menos una letra.");
         return;
     }
 
-    if (cantidadEspeciales > MAX_ESPECIALES) {
-        showError(`⚠️ Demasiados caracteres especiales.`);
+    // 3. Validación: Máximo 4 números y 4 especiales
+    const totalNumeros = (titulo.match(/\d/g) || []).length;
+    const totalEspeciales = (titulo.match(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/g) || []).length;
+
+    if (totalNumeros > 4) {
+        showError("⚠️ Máximo 4 números permitidos.");
+        return;
+    }
+    if (totalEspeciales > 4) {
+        showError("⚠️ Máximo 4 caracteres especiales permitidos.");
         return;
     }
     // ==========================================
