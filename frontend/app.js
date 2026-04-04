@@ -273,7 +273,7 @@ function getTasks() {
         folderDisplay.id = "dynamic-folder-title";
         // Estilo minimalista y limpio (puedes ajustar los colores si quieres)
         folderDisplay.style.marginBottom = "15px";
-        folderDisplay.style.color = "#aaa"; 
+        folderDisplay.style.color = "#c05a5a"; 
         folderDisplay.style.fontSize = "0.95rem";
         folderDisplay.style.paddingLeft = "5px";
         // Lo insertamos justo ANTES de la lista de tareas
