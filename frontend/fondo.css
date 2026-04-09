@@ -1,99 +1,325 @@
-body {
-	background: linear-gradient(135deg, #2c3e50 0%, #4b6cb7 100%);
+/* =========================================
+   PALETAS DE COLORES DINÁMICAS (TEMAS)
+========================================= */
+/*NO TOCAR NI COMBINAR CON EL STYLES, SINO ME PONGO ANGRY */
+/*  TEMA OCÉANO  */
+body.tema-oceano {
+    --app-bg: #1B4F72;       
+    --task-card-bg: #85C1E9; 
+    --btn-bg: #2874A6;       
+    --btn-hover: #154360;    
 }
 
-@keyframes flotar {
-	to{ 
-		margin-top: 0.6vh;
- }
+/*  TEMA LLUVIA  */
+body.tema-lluvia {
+    --app-bg: #424949;       
+    --task-card-bg: #A6ACAF; 
+    --btn-bg: #717D7E;       
+    --btn-hover: #515A5A;
+}
+
+/*  TEMA NIEVE  */
+body.tema-nieve {
+    --app-bg: #5DADE2;       
+    --task-card-bg: #D6EAF8; 
+    --btn-bg: #3498DB;       
+    --btn-hover: #2874A6;
+}
+#add-btn, .toggle-filter, .toggle-view, .btn-folder-action.btn-open {
+    background-color: var(--btn-bg, #A9B1E6) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+#add-btn:hover, .toggle-filter:hover, .toggle-view:hover {
+    background-color: var(--btn-hover, #9299DF) !important;
+}
+/* =========================================
+   SISTEMA DE FONDOS DINÁMICOS
+========================================= */
+.dynamic-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: -2; 
+    display: none; 
+    overflow: hidden;
+}
+
+.dynamic-bg.active-bg {
+    display: block; 
+}
+
+/* --- 1. Burbujas --- */
+#tema-oceano {
+    background: linear-gradient(135deg, #3a3f9a 0%, #5f64d3 100%);
+    
 }
 .burbujas div {
-    /* Un degradado que va de blanco puro a un morado muy claro, ambos con transparencia */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(201, 206, 240, 0.3) 100%);
-    
-    /* Añadimos un borde fino para que parezcan pompas de jabón */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    
-    /* Un brillo interno suave */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(201, 206, 240, 0.3) 100%); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
     box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
-    
     border-radius: 100%;
     position: absolute;
-    bottom: 0;
+    bottom: -50px;
     animation: animarburbujas 4s linear infinite;
 }
-.burbujas div:nth-child(1){
-	width: 50px;
- 	height: 45px;
- 	left: 0%;
- 	animation-duration: 5.5s;
-}
-.burbujas div:nth-child(2){
-	width: 60px;
- 	height: 55px;
- 	left: 20%;
- 	animation-duration: 8s;
+.burbujas div:nth-child(1){ width: 50px; height: 45px; left: 1%; animation-duration: 5.5s; }
+.burbujas div:nth-child(2){ width: 60px; height: 55px; left: 10%; animation-duration: 8s; }
+.burbujas div:nth-child(3){ width: 30px; height: 27px; left: 20%; animation-duration: 5s; }
+.burbujas div:nth-child(4){ width: 65px; height: 60px; left: 80%; animation-duration: 10s; }
+.burbujas div:nth-child(5){ width: 55px; height: 50px; left: 85%; animation-duration: 6.5s; }
+.burbujas div:nth-child(6){ width: 65px; height: 52px; left: 90%; animation-duration: 7s; }
 
+@keyframes animarburbujas {
+    0% { transform: scale(0.5); bottom: -50px; }
+    50% { margin-left: 15px; opacity: 0.5; }
+    100% { transform: scale(1) rotate(90deg); bottom: 105vh; opacity: 0; }
 }
-.burbujas div:nth-child(3){
-	width: 30px;
- 	height: 27px;
- 	left: 10%;
- 	animation-duration: 5s;
+
+/* --- 2. LLUVIA --- */
+#tema-lluvia {
+    background: linear-gradient(135deg, #2c3e50 0%, #7f8c8d 100%);
 }
-.burbujas div:nth-child(4){
-	width: 65px;
- 	height: 60px;
- 	left: 90%;
- 	animation-duration: 10s;
+
+#tema-lluvia .shuvia {
+    position: absolute; 
+    width: 100%; 
+    height: 100%;
+    animation: fondoshuvia 10s linear infinite;
 }
-.burbujas div:nth-child(5){
-	width: 55px;
- 	height: 50px;
- 	left: 80%;
- 	animation-duration: 6.5s;
+
+@keyframes fondoshuvia {
+    0%, 100% { backdrop-filter: blur(0); }
+    50% { backdrop-filter: blur(2px); }
 }
-.burbujas div:nth-child(6){
-	width: 65px;
- 	height: 52px;
- 	left: 85%;
- 	animation-duration: 7s;
+.particula-lluvia {
+    background: rgba(255, 255, 255, 0.6); 
+    position: absolute; 
+    width: 1.5px; 
+    height: 15px; 
+    top: -50px;   
+    animation-name: caer-lluvia-recta;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
-.burbujas div:nth-child(7){
-	width: 60px;
- 	height: 72px;
- 	left: 90px;
- 	animation-duration: 6s;
+@keyframes caer-lluvia-recta {
+    0% { 
+        top: -20px; 
+        opacity: 0; 
+    }
+    10% { 
+        opacity: 1; 
+    }
+    100% { 
+        top: 105vh; 
+        opacity: 1; 
+    }
 }
-.burbujas div:nth-child(8){
-	width: 60px;
- 	height: 72px;
- 	left: 95%;
- 	animation-duration: 6s;
+/* --- 3. NIEVE --- */
+#tema-nieve {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
 }
-@keyframes  animarburbujas {
-	0%{
-		width: 0;
-		height: 0;
-	}
-	3%{
-		width: 30px;
-		height: 27px;
-	}
-	50%{
-		margin-left: 10px;
-		opacity: 0.5;
-	
-	}
-	100%{
-		transform: rotate(90deg);
-		bottom: 100vh;
-		
-	}
+
+.particula-nieve {
+    background: white; 
+    border-radius: 50%;
+    position: absolute; 
+    width: 6px; 
+    height: 6px; 
+    top: -50px;
+    animation: caer-nieve-diagonal linear infinite;
+    box-shadow: 0 0 5px rgba(255,255,255,0.8);
 }
-body {
-    background: linear-gradient(135deg, #3a3f9a 0%, #5f64d3 100%);
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
+
+@keyframes caer-nieve-diagonal {
+    0% { 
+        top: -10px; 
+        transform: translateX(0); 
+        }
+    100% { 
+        top: 105vh; 
+        transform: translateX(-250px); 
+    }
+}
+
+/* suelo del estilo de nieve :p */
+
+.suelo-nieve {
+    position: absolute;
+    bottom: -10vh; 
+    left: -5vw;
+    width: 110vw; 
+    height: 20vh; 
+    background-color: #ffffff;
+    border-radius: 30%; 
+    box-shadow: inset 0 20px 30px rgba(164, 195, 210, 0.3);
+    z-index: 10; 
+}
+/* muñeco de nieve*/
+.muñeco-contenedor {
+    position: absolute;
+    bottom: 7vh; 
+    left: 10%;
+    transform: translateX(-50%); 
+    width: 200px;
+    height: 300px;
+    z-index: 10; 
+}
+
+.cuerpo {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset -10px -10px 20px rgba(116, 150, 181, 0.2), 
+                0 5px 10px rgba(0,0,0,0.1);
+}
+
+.base {
+    width: 150px;
+    height: 150px;
+    bottom: 0;
+    z-index: 1;
+}
+
+.medio {
+    width: 110px;
+    height: 110px;
+    bottom: 100px; 
+    z-index: 2;
+}
+
+.medio::after, .medio::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #2c3e50; 
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.medio::before { top: 30px; }
+.medio::after { top: 60px; }
+.cabeza {
+    width: 80px;
+    height: 80px;
+    bottom: 180px; 
+    z-index: 3;
+    background-color: #fff; 
+}
+
+.ojo {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #2c3e50;
+    border-radius: 50%;
+    top: 25px;
+}
+
+.ojo-izq { left: 20px; }
+.ojo-der { right: 20px; }
+.nariz {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 5px solid #e67e22; 
+    top: 40px;
+    left: 63%;
+    transform: translateX(-50%) rotate(10deg);  
+}
+
+.bufanda {
+    position: absolute;
+    width: 90px;
+    height: 20px;
+    background-color: #e74c3c; 
+    border-radius: 10px;
+    bottom: 185px; 
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+}
+
+.bufanda::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background-color: #e74c3c; 
+    border-radius: 5px;
+    right: 15px;
+    top: 10px;
+}
+
+.sombrero {
+    position: absolute;
+    width: 70px;
+    height: 60px;
+    bottom: 240px; 
+    left: 48%;
+    transform: translateX(-50%) rotate(-5deg); 
+    z-index: 5;
+}
+
+.sombrero::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #34495e; 
+    border-radius: 5px 5px 0 0;
+    bottom: 5px;
+}
+
+.sombrero::before {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 10px;
+    background-color: #2c3e50; 
+    border-radius: 5px;
+    bottom: 0;
+    left: -10%;
+}
+.nariz {
+    cursor: pointer !important;
+    transition: transform 0.3s ease !important;
+    pointer-events: auto !important; 
+    z-index: 100 !important; 
+}
+.nariz:hover {
+    transform: translateX(-50%) rotate(15deg) scale(1.2) !important;
+    filter: brightness(1.2);
+}
+.Lluvia-nieve, .particula-nieve, .shuvia, .suelo-nieve, .dynamic-bg {
+    pointer-events: none !important; 
+}
+.glass-container, .modal, #theme-btn {
+    pointer-events: auto !important;
+}
+.sombrero {
+    cursor: pointer !important; 
+    pointer-events: auto !important; 
+    z-index: 100 !important; 
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease !important; 
+}
+
+.sombrero-volando {
+    transform: translate(150px, -200px) rotate(360deg) !important;
+    opacity: 0; 
+}
+@keyframes vuelo {
+    0%   { transform: translate(-50%, 0px) rotate(-5deg); opacity: 1; }
+    20%  { transform: translate(100px, -150px) rotate(180deg); opacity: 1; }
+    100% { transform: translate(1000px, -400px) rotate(1440deg); opacity: 0; }
+}
+
+.sombrero-acrobata {
+    animation: vuelo 3.5s ease-in-out forwards !important;
 }
