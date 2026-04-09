@@ -560,7 +560,7 @@ h1 {
 }
 
 .modal-priority-pill {
-    background: #F3E5AB; 
+    /* Quitamos el background de aquí para que lo den las clases específicas */
     color: #1A1A1A;
     padding: 6px 18px;
     border-radius: 12px;
@@ -568,8 +568,21 @@ h1 {
     font-size: 0.9rem;
 }
 
+/* Color Verde Pastel para Baja */
+.modal-priority-pill.Baja {
+    background: var(--priority-low) !important; /* Usa la variable #C1E1C1 definida en tu :root */
+    color: #155724 !important;
+}
+
+/* Color Amarillo para Media */
+.modal-priority-pill.Media {
+    background: var(--priority-medium) !important;
+    color: #856404 !important;
+}
+
+/* Color Rojo para Alta */
 .modal-priority-pill.Alta {
-    background: #D19494 !important;
+    background: var(--priority-high) !important;
     color: white !important;
 }
 
