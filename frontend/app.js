@@ -872,60 +872,52 @@ function closeEasterEgg() {
     const modal = document.getElementById("easter-egg-modal");
     if (modal) modal.style.display = "none";
 }
-document.addEventListener('click', function(e) {   
-    if (document.body.classList.contains('tema-nieve')) {     
-        const nariz = document.querySelector('.nariz');
-        if (!nariz) return;
-        const rect = nariz.getBoundingClientRect();     
-        const margen = 40; 
-        const leDioAlBlanco = (
-            e.clientX >= (rect.left - margen) && 
-            e.clientX <= (rect.right + margen) &&
-            e.clientY >= (rect.top - margen) && 
-            e.clientY <= (rect.bottom + margen)
-        );
-        if (leDioAlBlanco) {
-            const modal = document.getElementById("easter-egg-modal");
-            if (modal) modal.style.display = "flex";
-            console.log("%c⛄ ¡Yoxz estuvo aquí!", "color: #8990E1; font-size: 16px; font-weight: bold;");
-        }
-    }
-});
-/* ===========================
-   EASTER EGG (SOMBRERO ACROBÁTICO)
-=========================== */
+
 document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 600) return;
+
     if (document.body.classList.contains('tema-nieve')) {
+        const nariz = document.querySelector('.nariz');
+        if (nariz) {
+            const rectN = nariz.getBoundingClientRect();
+            const margenN = 40; 
+            const leDioALaNariz = (
+                e.clientX >= (rectN.left - margenN) && e.clientX <= (rectN.right + margenN) &&
+                e.clientY >= (rectN.top - margenN) && e.clientY <= (rectN.bottom + margenN)
+            );
+
+            if (leDioALaNariz) {
+                const modal = document.getElementById("easter-egg-modal");
+                if (modal) modal.style.display = "flex";
+                console.log("%c⛄ ¡Yoxz estuvo aquí!", "color: #8990E1; font-size: 16px; font-weight: bold;");
+                return; 
+            }
+        }
+
         const sombrero = document.querySelector('.sombrero');
-        if (!sombrero) return;
+        if (sombrero && !sombrero.classList.contains('sombrero-acrobata')) {
+            const rectS = sombrero.getBoundingClientRect();
+            const margenS = 20; 
+            const leDioAlSombrero = (
+                e.clientX >= (rectS.left - margenS) && e.clientX <= (rectS.right + margenS) &&
+                e.clientY >= (rectS.top - margenS) && e.clientY <= (rectS.bottom + margenS)
+            );
 
-        const rect = sombrero.getBoundingClientRect();
-        const margen = 20; 
-        
-        const leDioAlSombrero = (
-            e.clientX >= (rect.left - margen) && 
-            e.clientX <= (rect.right + margen) &&
-            e.clientY >= (rect.top - margen) && 
-            e.clientY <= (rect.bottom + margen)
-        );
-
-        if (leDioAlSombrero && !sombrero.classList.contains('sombrero-acrobata')) {
-            
-            sombrero.style.transition = 'none';
-            sombrero.style.transform = '';
-            
-            sombrero.classList.add('sombrero-acrobata');
-            
-            setTimeout(() => {
-                sombrero.classList.remove('sombrero-acrobata');
+            if (leDioAlSombrero) {
+                sombrero.style.transition = 'none';
+                sombrero.style.transform = '';
                 
-                sombrero.style.opacity = '0';
+                sombrero.classList.add('sombrero-acrobata');
+                
                 setTimeout(() => {
-                    sombrero.style.transition = 'opacity 0.5s ease';
-                    sombrero.style.opacity = '1';
-                }, 50);
-                
-            }, 4000);
+                    sombrero.classList.remove('sombrero-acrobata');
+                    sombrero.style.opacity = '0';
+                    setTimeout(() => {
+                        sombrero.style.transition = 'opacity 0.5s ease';
+                        sombrero.style.opacity = '1';
+                    }, 50);
+                }, 4000);
+            }
         }
     }
 });
