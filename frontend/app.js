@@ -140,10 +140,11 @@ function renderFolderTabs() {
 }
 
 function createFolder() {
+    document.getElementById("folder-manager-modal").style.display = "none";
+
     loadTasksForFolderModal();
     document.getElementById("folder-modal").style.display = "flex";
 }
-
 function loadTasksForFolderModal() {
     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     const container = document.getElementById("folder-task-list");
